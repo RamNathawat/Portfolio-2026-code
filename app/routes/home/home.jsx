@@ -149,7 +149,7 @@ export const Home = () => {
         title="Ethereal Canvas"
         description="A curated photography portfolio capturing fleeting moments, color, and atmosphere through bold composition and layered visual storytelling."
         buttonText="View project"
-        buttonLink="https://harmonious-bavarois-ae1149.netlify.app/"
+        buttonLink="https://ethereal-canvas.netlify.app/"
         model={{
           type: 'laptop',
           alt: 'Annotating a biomedical image in the Slice app',
