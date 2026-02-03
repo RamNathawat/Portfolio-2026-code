@@ -1,0 +1,165 @@
+---
+title: "What Kind of Thing Is a Trained Model?"
+abstract: "A trained neural network isn’t a Platonic object—it’s a contingent artifact of optimization, randomness, and code. Here’s what that means, both philosophically and technically."
+date: "2026-02-04"
+featured: true
+---
+
+A few weeks ago I was tinkering with a tiny MNIST classifier late at night—just a couple of dense layers, nothing fancy. I ran the training script twice in a row. Same code. Same data. Same hyperparameters.
+
+And yet… the saved model files were different. Like, *really* different.
+
+I stared at the floating-point numbers inside, baffled. What shocked me more was that both classifiers worked fine. They gave similar predictions. Same accuracy. That moment stuck with me. A trained neural net isn’t a single fixed sculpture—it’s more like the imprint of the process that made it.
+
+
+
+---
+
+## Two Nets, Two Seeds
+
+Let’s make this concrete. I ran a simple experiment in PyTorch.
+
+```python
+import torch
+import torchvision
+from torch import nn, optim
+from torchvision import datasets, transforms
+
+# MNIST data
+transform = transforms.Compose([
+    transforms.ToTensor(),
+    transforms.Normalize((0.5,), (0.5,))
+])
+
+trainset = datasets.MNIST(
+    root="./data",
+    train=True,
+    download=True,
+    transform=transform
+)
+
+trainloader = torch.utils.data.DataLoader(
+    trainset,
+    batch_size=64,
+    shuffle=True
+)
+
+# Simple two-layer MLP
+class Net(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.fc1 = nn.Linear(28 * 28, 50)
+        self.fc2 = nn.Linear(50, 10)
+
+    def forward(self, x):
+        x = x.view(-1, 28 * 28)
+        x = torch.relu(self.fc1(x))
+        return self.fc2(x)
+```
+
+Now I trained two models—identical architecture, identical data—but with different random seeds.
+
+```python
+
+loss_fn = nn.CrossEntropyLoss()
+
+# Model A — seed 0
+torch.manual_seed(0)
+modelA = Net()
+optimizerA = optim.SGD(modelA.parameters(), lr=0.01)
+
+for X, y in trainloader:
+    optimizerA.zero_grad()
+    out = modelA(X)
+    loss = loss_fn(out, y)
+    loss.backward()
+    optimizerA.step()
+
+# Model B — seed 1
+torch.manual_seed(1)
+modelB = Net()
+optimizerB = optim.SGD(modelB.parameters(), lr=0.01)
+
+for X, y in trainloader:
+    optimizerB.zero_grad()
+    out = modelB(X)
+    loss = loss_fn(out, y)
+    loss.backward()
+    optimizerB.step()
+```
+
+A quick sanity check:
+
+```python
+modelA.eval()
+modelB.eval()
+
+X_test, _ = next(iter(trainloader))
+predA = modelA(X_test).argmax(dim=1)
+predB = modelB(X_test).argmax(dim=1)
+
+print("Same predictions fraction:", (predA == predB).float().mean())
+```
+
+Result: the models agree about ~90% of the time. And yet their weight matrices differ wildly. Try torch.allclose() on each layer—it returns False. Their internal representations are different. Their paths through weight space were different.
+
+And still… they solve the task.
+
+## So What Is the Model?
+The neural net we casually call “the model” isn’t a unique object. It’s an artifact of the training process—code, data, optimization dynamics, and randomness baked into floating-point weights. This isn’t a bug or an edge case. It’s fundamental.
+
+As Izmailov et al. observe:
+
+Train two networks of the same architecture, and you get two different local optima in parameter space.
+
+Both have low loss. Both work. But they are not the same solution. There’s symmetry too. You can permute hidden units within a layer and obtain the same function. So even the raw weights aren’t sacred.
+
+A model isn’t a Platonic form. It’s a contingent artifact.
+
+## The Loss Landscape Isn’t What You Think
+We often imagine the loss surface as a jagged mountain range—sharp valleys, isolated minima. Reality is stranger.
+
+Empirical work suggests that most good solutions live in broad, flat regions—and that many minima are connected. This phenomenon is known as mode connectivity. Between two independently trained networks, there often exists a smooth, low-loss path in weight space connecting them.
+
+“We can find a curved path between them such that the loss is effectively constant along the path.” — Izmailov et al.
+
+The implication is subtle but profound. The precise model you get is somewhat arbitrary. It’s one point in a vast, high-dimensional region of “good enough” solutions.
+
+It’s not the solution. It’s a solution.
+
+## The Model as a Contingent Artifact
+
+Philosophers distinguish between **Platonic objects**—entities whose identity is independent of their creation—and **artifacts**, whose identity depends on how they were made. A trained neural network is an artifact.
+
+Two models trained on the same data, with the same code, can still differ because of randomness in initialization and data ordering. Each is the result of its own journey through the loss landscape. This is why techniques like ensembling, checkpoint averaging, and weight interpolation work at all. If there were a single, sacred “true” model, averaging would destroy it.
+
+<table style={{ width: '100%', borderCollapse: 'collapse', margin: '32px 0' }}>
+  <thead>
+    <tr style={{ borderBottom: '1px solid #333' }}>
+      <th style={{ textAlign: 'left', padding: '12px 8px', color: '#888', fontWeight: '400', fontSize: '14px' }}>Viewpoint</th>
+      <th style={{ textAlign: 'left', padding: '12px 8px', color: '#888', fontWeight: '400', fontSize: '14px' }}>Weights</th>
+      <th style={{ textAlign: 'left', padding: '12px 8px', color: '#888', fontWeight: '400', fontSize: '14px' }}>Optimization</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style={{ borderBottom: '1px solid #222' }}>
+      <td style={{ padding: '16px 8px', verticalAlign: 'top' }}><strong>Platonic</strong></td>
+      <td style={{ padding: '16px 8px', color: '#ccc' }}>Fixed, universal constants</td>
+      <td style={{ padding: '16px 8px', color: '#ccc' }}>Discovery of the single "truth"</td>
+    </tr>
+    <tr>
+      <td style={{ padding: '16px 8px', verticalAlign: 'top' }}><strong>Artifactual</strong></td>
+      <td style={{ padding: '16px 8px', color: '#ccc' }}>Contingent traces of a path</td>
+      <td style={{ padding: '16px 8px', color: '#ccc' }}>One trajectory among many</td>
+    </tr>
+  </tbody>
+</table>
+
+But there isn’t. So averaging helps.
+
+## Final Thoughts
+I no longer think of a trained model as a blueprint or a static object. I think of it as a story. A frozen trace of optimization, randomness, and architecture—a record of a particular trajectory through a vast space of possibilities.
+
+Next time you call load_state_dict, remember: you’re not loading the model.
+
+You’re loading a model. One instantiation. One history. One of many that work. And that makes it all the more fascinating.
