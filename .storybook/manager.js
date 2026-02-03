@@ -6,6 +6,6 @@ addons.setConfig({
     ...themes.dark,
     brandImage: './icon.svg',
     brandTitle: 'Ram Nathawat Components',
-    brandUrl: 'https://hamishw.com',
+    brandUrl: 'https://318a8a68.portfolio-2026-8ga.pages.dev/',
   },
 });

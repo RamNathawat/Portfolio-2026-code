@@ -1,8 +1,8 @@
 {
   "name": "portfolio",
-  "homepage": "https://hamishw.com",
+  "homepage": "https://318a8a68.portfolio-2026-8ga.pages.dev/",
   "description": "Portfolio site for Ram Nathawat",
-  "repository": "https://github.com/HamishMW/portfolio.git",
+  "repository": "https://github.com/RamNathawat/Portfolio-2026-code",
   "author": "Ram Nathawat",
   "sideEffects": false,
   "type": "module",
@@ -11,7 +11,7 @@
     "dev": "node ./scripts/dev.cjs && remix vite:dev",
     "start": "wrangler pages dev ./build/client",
     "postinstall": "node ./scripts/draco.cjs",
-    "deploy": "npm run build && wrangler pages deploy ./build/client --project-name portfolio",
+    "deploy": "npm run build && wrangler pages deploy ./build/client --project-name portfolio-ram-2026",
     "dev:storybook": "storybook dev -p 6006",
     "build:storybook": "storybook build",
     "deploy:storybook": "wrangler pages deploy ./storybook-static --project-name portfolio-storybook --branch main"
