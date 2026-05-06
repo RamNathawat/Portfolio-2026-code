@@ -20,7 +20,7 @@ import { ProjectSummary } from './project-summary';
 import { useEffect, useRef, useState } from 'react';
 import config from '~/config.json';
 import styles from './home.module.css';
-
+import ratanJaipurTexture from '~/assets/ratantextiles.png';
 // Prefetch draco decoader wasm
 export const links = () => {
   return [
@@ -100,26 +100,26 @@ export const Home = () => {
         sectionRef={intro}
         scrollIndicatorHidden={scrollIndicatorHidden}
       />
-      <ProjectSummary
-        id="project-1"
-        sectionRef={projectOne}
-        visible={visibleSections.includes(projectOne.current)}
-        index={1}
-        title="An interactive motion-driven hero section"
-        description="A rotating 3D form that responds to hover-based color interactions in real time"
-        buttonText="View project"
-        buttonLink="https://zippy-sawine-b5e2cf.netlify.app/"
-        model={{
-          type: 'laptop',
-          alt: 'Smart Sparrow lesson builder',
-          textures: [
-            {
-              srcSet: `${lupusTexture} 1280w, ${lupusTexture} 2560w`,
-              placeholder: lupusTexture,
-            },
-          ],
-        }}
-      />
+<ProjectSummary
+  id="project-1"
+  sectionRef={projectOne}
+  visible={visibleSections.includes(projectOne.current)}
+  index={1}
+  title="Ratan Jaipur"
+  description="A premium handcrafted home textiles and lifestyle experience built for Ratan Jaipur, blending elegant visuals, smooth interactions, and a refined luxury-focused interface inspired by the brand’s heritage craftsmanship."
+  buttonText="Visit Website"
+  buttonLink="https://www.ratanjaipur.com/"
+  model={{
+    type: 'laptop',
+    alt: 'Ratan Jaipur website preview',
+    textures: [
+      {
+        srcSet: `${ratanJaipurTexture} 1280w, ${ratanJaipurTexture} 2560w`,
+        placeholder: ratanJaipurTexture,
+      },
+    ],
+  }}
+/>
       <ProjectSummary
         id="project-2"
         alternate
@@ -132,7 +132,7 @@ export const Home = () => {
         buttonLink="https://taupe-jalebi-e305cd.netlify.app/"
         model={{
           type: 'laptop',
-          alt: 'App login screen',
+          alt: 'Lagunitas Brewing Company',
           textures: [
             {
               srcSet: `${lagunitasTexture} 1280w, ${lagunitasTexture} 2560w`,
@@ -152,7 +152,7 @@ export const Home = () => {
         buttonLink="https://ethereal-canvas.netlify.app/"
         model={{
           type: 'laptop',
-          alt: 'Annotating a biomedical image in the Slice app',
+          alt: 'Photography portfolio',
           textures: [
             {
               srcSet: `${sliceTexture} 800w, ${sliceTextureLarge} 1920w`,

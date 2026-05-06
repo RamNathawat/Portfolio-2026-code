@@ -21,15 +21,15 @@ const ProfileText = ({ visible, titleId }) => (
     <DecoderText text="Hi there" start={visible} delay={500} />
   </Heading>
   <Text className={styles.description} data-visible={visible} size="l" as="p">
-    I’m a 20-year-old developer and designer currently building freelance projects and managing my degree. 
-    My work spans from full-stack MERN development and Python-based automation to engineering complex web scraping systems that crawl thousands of sources. 
-    Being comfortable with code allows me to rapidly prototype ideas, bridge the gap between technical logic and minimalist UI, and create 
-    seamless digital experiences that feel both intentional and grounded.
+    I’m a developer and designer building freelance products, automation systems, and scalable digital experiences for startups and businesses. 
+    My work spans full-stack MERN development, Python-based automation, and engineering large-scale web scraping systems that process thousands of sources efficiently. 
+    Being comfortable with code allows me to rapidly prototype ideas, bridge the gap between technical execution and minimalist UI, and create 
+    seamless digital experiences that feel polished, intentional, and built with purpose.
   </Text>
   <Text className={styles.description} data-visible={visible} size="l" as="p">
-    In my spare time I like to practice my chess strategy, explore grounded philosophical literature, 
-    and work on <Link href="/projects/couldve-been">creative storytelling projects</Link>. 
-    I’m always down for hearing about new projects, so feel free to drop me a line.
+    Outside of work I enjoy sharpening my chess strategy, exploring grounded philosophical literature, 
+    and working on <Link href="/projects/couldve-been">creative storytelling projects</Link>. 
+    I’m always interested in ambitious collaborations and new opportunities, so feel free to drop me a line.
   </Text>
 </Fragment>
 );
